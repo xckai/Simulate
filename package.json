@@ -1,0 +1,30 @@
+{
+  "name": "simulator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": " concurrently \"npm run tsc:w\" \"gulp start\" ",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.wdf.sap.corp:I326939/Simulator.git"
+  },
+  "devDependencies": {
+    "@types/d3": "^4.7.0",
+    "@types/jquery": "^2.0.41",
+    "@types/leaflet": "^1.0.60",
+    "@types/underscore": "^1.8.0",
+    "bower": "^1.8.0",
+    "browser-sync": "^2.18.0",
+    "concurrently": "^3.4.0",
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.3.0",
+    "typescript": "2.3.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

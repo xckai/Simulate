@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chart Test</title>
+</head>
+<script src="../lib/requirejs/require.js"></script>
+<script src="./dist/requireConfig.js"></script>
+<link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css"></link>
+<body>
+
+</body>
+<script>
+    requirejs(['bootstrap'])
+    requirejs(['App',"Bar"],function(app,Bar){
+        var app=app.getInstance()
+        app.add(new Bar())
+        app.render()
+    })
+</script>
+<style>
+
+</style>
+</html>
