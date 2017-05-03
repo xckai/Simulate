@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./Component", "d3"], function (require, exports, Component, d3) {
+define(["require", "exports", "../Component", "jquery", "text!./Bar.html"], function (require, exports, Component, $, template) {
     "use strict";
     return (function (_super) {
         __extends(Bar, _super);
@@ -17,8 +17,20 @@ define(["require", "exports", "./Component", "d3"], function (require, exports, 
         }
         Bar.prototype.renderer = function () {
             //let c=document.createDocumentFragment()
-            d3.select(this.el).append("xhtml:nav").classed("navbar navbar-default", true).append("xhtml:div").classed("container-fluid", true);
+            $(this.el).append(template);
+            this.initHook();
             return this.el;
+        };
+        Bar.prototype.initHook = function () {
+            var _this = this;
+            $(this.el).find(".options").children("li").on("click", function (e) {
+                _this.optionClicked(e);
+            });
+        };
+        Bar.prototype.optionClicked = function (e) {
+            var id = $(e.target).attr("value");
+            $(this.el).find(".options-text").text($(e.target).text());
+            $(this.el).find("#" + id + "-modal").modal("show");
         };
         return Bar;
     }(Component));

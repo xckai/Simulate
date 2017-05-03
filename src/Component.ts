@@ -1,7 +1,8 @@
-import Evented= require("./Evented")
+import {Evented} from "./Evented"
 import _ =require("underscore")
 import $= require("jquery")
- //import d3=require("d3")
+import {Style} from "./Style"
+import d3=require("d3")
 export =class Component extends Evented{
     constructor(conf?){  
         super()
@@ -9,6 +10,10 @@ export =class Component extends Evented{
         if(!this.config.id){
             this.config.id=_.uniqueId("component")
         }
+        let fragment=document.createDocumentFragment()
+        this.el=d3.select(fragment).append("xhtml:div").node()
+        this.updateConfig()
+        
     }
     setConfig(c?){
         if(c){
@@ -18,45 +23,69 @@ export =class Component extends Evented{
         }
        return this
     }
-    config={
-        id:null
+    updateConfig(){
+        if(this.config.className){
+            d3.select(this.el).classed(this.config.className,true)
+        }
+        d3.select(this.el).attr("id",this.config.id)
     }
-    _el:any
-    _isRendered:boolean=false
-    _children:Component []=[]
-    _parent:Component
+    config={
+        id:null,
+        className:null
+    }
+    protected style:{}
+    protected el:any
+    protected isRendered:boolean=false
+    protected children:Component []=[]
+    protected parent:Component
+    setStyle(s){
+        if(!this.style){
+            this.style={}
+        }
+        _.each(s,(v,k)=>{
+            this.style[k]=v
+        })
+        this.updateStyle()
+    }
+    updateStyle(){
+        if(this.el){
+            $(this.el).css(this.style)
+        }
+        return this
+    }
     addTo(c:Component){
-        this._parent=c
-        this._parent.add(this)
+        this.parent=c
+        this.parent.add(this)
         return this
     }
     add(nc:Component){
-       let i=_.findIndex(this._children,c=>c.config.id==nc.config.id)
-       nc._parent=this
+       let i=_.findIndex(this.children,c=>c.config.id==nc.config.id)
+       nc.parent=this
        if(i==-1){
-           this._children.push(nc)
+           this.children.push(nc)
        }else{
-           this._children[i]=nc
+           this.children[i]=nc
        }
        return this
     }
     getContainer(){
-        return this._el 
+        return this.el 
     }
     render(){
-        if(this._parent){
-            this._el=this.renderer()
-            $(this._parent.getContainer()).append(this._el)
-            _.each(this._children,c=>{
+        if(this.parent){
+            this.el=this.renderer()
+            $(this.parent.getContainer()).append(this.el)
+            _.each(this.children,c=>{
                 c.render()
             })
         }
         return this
     }
-    renderer(){
-        let fragment=document.createDocumentFragment()
-        this._el=fragment
-        return fragment
+    afterRender(){
+
     }
-    
+    renderer(){
+        this.updateStyle()
+        return this.el
+    }
 }

@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    return (function () {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Evented = (function () {
         function Evented() {
             this.events = {};
         }
@@ -59,4 +60,5 @@ define(["require", "exports"], function (require, exports) {
         };
         return Evented;
     }());
+    exports.Evented = Evented;
 });

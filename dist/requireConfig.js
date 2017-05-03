@@ -6,7 +6,8 @@
                 underscore:"../lib/underscore/underscore",
                 jquery:"../lib/jquery/dist/jquery",
                 bootstrap:"../lib/bootstrap/dist/js/bootstrap",
-                d3:"../lib/d3/d3"
+                d3:"../lib/d3/d3",
+                text : "../lib/text/text"
         },
         shim:{
                 leaflet:{

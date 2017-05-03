@@ -14,10 +14,12 @@ define(["require", "exports", "./Component", "jquery", "underscore"], function (
         __extends(App, _super);
         function App(conf) {
             var _this = _super.call(this, conf) || this;
-            _this._config = {
+            _this.config = {
+                id: null,
                 className: "AppContainer",
                 element: "body"
             };
+            _this.updateConfig();
             return _this;
         }
         App.prototype.getInstance = function () {
@@ -27,13 +29,9 @@ define(["require", "exports", "./Component", "jquery", "underscore"], function (
             return window._app;
         };
         App.prototype.render = function () {
-            if (!this._el) {
-                var fragment = document.createDocumentFragment();
-                this._el = fragment;
-                _.each(this._children, function (c) { return c.render(); });
-                $("body").append(this._el);
-                this._el = $("body")[0];
-            }
+            _.each(this.children, function (c) { return c.render(); });
+            $("body").append(this.el);
+            _.invoke(this.children, "afterRender");
             return this;
         };
         return App;

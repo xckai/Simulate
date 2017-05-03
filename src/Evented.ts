@@ -1,4 +1,4 @@
-export =class Evented{
+export class Evented{
     constructor(){
         this.events={};
     }

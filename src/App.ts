@@ -13,8 +13,10 @@ export={
 class App extends Component{
     constructor(conf?){
         super(conf)
+        this.updateConfig()
     }
-    _config={
+    config={
+        id:null,
         className:"AppContainer",
         element:"body"
     }
@@ -25,13 +27,9 @@ class App extends Component{
         return window._app
     }
     render(){
-        if(!this._el){
-            let fragment=document.createDocumentFragment()
-            this._el=fragment;
-            _.each(this._children,c=>c.render())
-            $("body").append(this._el)
-            this._el=$("body")[0]
-        }
+         _.each(this.children,c=>c.render())
+        $("body").append(this.el)
+        _.invoke(this.children,"afterRender")
         return this
     }
 

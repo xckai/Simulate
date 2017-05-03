@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html>
+<html style="height: 100%">
 <head>
   <meta charset="utf-8">
   <title>Chart Test</title>
@@ -8,14 +8,24 @@
 <script src="../lib/requirejs/require.js"></script>
 <script src="./dist/requireConfig.js"></script>
 <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css"></link>
-<body>
+<link rel="stylesheet" href="../lib/leaflet/dist/leaflet.css"></link>
+<body style="height:calc(100% - 52px)">
 
 </body>
 <script>
     requirejs(['bootstrap'])
-    requirejs(['App',"Bar"],function(app,Bar){
+    requirejs(['App',"Vicroad/Bar","Map/SmartMap"],function(app,Bar,Map){
         var app=app.getInstance()
-        app.add(new Bar())
+        app.setStyle({height:"100%",width:"100%"})
+      
+        var bar = new Bar ()
+        var map= new Map()
+        map.setStyle({height:"100%",width:"100%"})
+        app.add(bar)
+        app.add(map)
+        // var style = {position:"relative",top:"20px"}
+        // bar.setStyle(style)
+       
         app.render()
     })
 </script>

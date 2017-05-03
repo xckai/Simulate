@@ -8,21 +8,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./Evented", "underscore", "jquery"], function (require, exports, Evented, _, $) {
+define(["require", "exports", "./Evented", "underscore", "jquery", "d3"], function (require, exports, Evented_1, _, $, d3) {
     "use strict";
     return (function (_super) {
         __extends(Component, _super);
         function Component(conf) {
             var _this = _super.call(this) || this;
             _this.config = {
-                id: null
+                id: null,
+                className: null
             };
-            _this._isRendered = false;
-            _this._children = [];
+            _this.isRendered = false;
+            _this.children = [];
             _this.setConfig(conf);
             if (!_this.config.id) {
                 _this.config.id = _.uniqueId("component");
             }
+            var fragment = document.createDocumentFragment();
+            _this.el = d3.select(fragment).append("xhtml:div").node();
+            _this.updateConfig();
             return _this;
         }
         Component.prototype.setConfig = function (c) {
@@ -34,40 +38,63 @@ define(["require", "exports", "./Evented", "underscore", "jquery"], function (re
             }
             return this;
         };
+        Component.prototype.updateConfig = function () {
+            if (this.config.className) {
+                d3.select(this.el).classed(this.config.className, true);
+            }
+            d3.select(this.el).attr("id", this.config.id);
+        };
+        Component.prototype.setStyle = function (s) {
+            var _this = this;
+            if (!this.style) {
+                this.style = {};
+            }
+            _.each(s, function (v, k) {
+                _this.style[k] = v;
+            });
+            this.updateStyle();
+        };
+        Component.prototype.updateStyle = function () {
+            if (this.el) {
+                $(this.el).css(this.style);
+            }
+            return this;
+        };
         Component.prototype.addTo = function (c) {
-            this._parent = c;
-            this._parent.add(this);
+            this.parent = c;
+            this.parent.add(this);
             return this;
         };
         Component.prototype.add = function (nc) {
-            var i = _.findIndex(this._children, function (c) { return c.config.id == nc.config.id; });
-            nc._parent = this;
+            var i = _.findIndex(this.children, function (c) { return c.config.id == nc.config.id; });
+            nc.parent = this;
             if (i == -1) {
-                this._children.push(nc);
+                this.children.push(nc);
             }
             else {
-                this._children[i] = nc;
+                this.children[i] = nc;
             }
             return this;
         };
         Component.prototype.getContainer = function () {
-            return this._el;
+            return this.el;
         };
         Component.prototype.render = function () {
-            if (this._parent) {
-                this._el = this.renderer();
-                $(this._parent.getContainer()).append(this._el);
-                _.each(this._children, function (c) {
+            if (this.parent) {
+                this.el = this.renderer();
+                $(this.parent.getContainer()).append(this.el);
+                _.each(this.children, function (c) {
                     c.render();
                 });
             }
             return this;
         };
+        Component.prototype.afterRender = function () {
+        };
         Component.prototype.renderer = function () {
-            var fragment = document.createDocumentFragment();
-            this._el = fragment;
-            return fragment;
+            this.updateStyle();
+            return this.el;
         };
         return Component;
-    }(Evented));
+    }(Evented_1.Evented));
 });
