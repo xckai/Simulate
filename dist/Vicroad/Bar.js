@@ -10,7 +10,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 define(["require", "exports", "../Component", "jquery", "text!./Bar.html"], function (require, exports, Component, $, template) {
     "use strict";
-    return (function (_super) {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Bar = (function (_super) {
         __extends(Bar, _super);
         function Bar(c) {
             return _super.call(this, c) || this;
@@ -34,4 +35,5 @@ define(["require", "exports", "../Component", "jquery", "text!./Bar.html"], func
         };
         return Bar;
     }(Component));
+    exports.Bar = Bar;
 });

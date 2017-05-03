@@ -2,7 +2,7 @@ import Component=require("../Component")
 import d3= require("d3")
 import $=require("jquery")
 import template = require ('text!./Bar.html')
-export=class Bar extends Component{
+export class Bar extends Component{
     constructor(c?){
         super(c)
     }

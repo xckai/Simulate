@@ -1,12 +1,22 @@
 import Component=require("../Component")
-import d3= require("d3")
-import $=require("jquery")
+import _ =require("underscore")
 import L= require("leaflet")
-export =class SmartMap extends Component{
+import {MapSetting} from "../Map/MapSetting"
+export class SmartMap extends Component{
     constructor(conf?){
         super(conf)
         this.setStyle({height:"100%",width:"100%"})
+        this.layers=[]
+       
     }
+    setMapSetting(s){
+          this.mapSetting=s
+         let base= L.tileLayer(this.mapSetting.baseLayer.mapUrl, {
+                        maxZoom: this.mapSetting.baseLayer.maxZoom
+                    })
+         this.addLayer("base",base)
+    }
+    mapSetting:MapSetting
     map:L.Map
     renderer(){
         // let mapContainer=$("<div></div>").css(this.style)
@@ -18,9 +28,27 @@ export =class SmartMap extends Component{
     }
     afterRender(){
          this.map=L.map(this.el)
-                    this.map.setView([31.2, 121], 9);
-         L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 18
-                    }).addTo(this.map);
+                    this.map.setView(this.mapSetting.center, this.mapSetting.zoom);
+          _.each(this.layers,(l)=>l.layer.addTo(this.map))
+    }
+    layers:any[]
+    addLayer(id:string,l:L.Layer){
+        this.removeLayer(id)
+        let o={id:id,layer:l}
+        this.layers.push(o)
+    }
+    getLayer(id:string){
+        let ls=_.where(this.layers,{id:id})
+        if(ls.length>0){
+            return ls[0].layer
+        }else{
+            return null
+        }
+    }
+    removeLayer(id:string){
+        let ls=_.where(this.layers,{id:id})
+        _.each(ls,o=>o.layer.remove())
+        this.layers=_.filter(this.layers,o=>o.id!=id)
+        return this
     }
 }

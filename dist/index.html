@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <title>Chart Test</title>
 </head>
-<script src="../lib/requirejs/require.js"></script>
+<script  src="../lib/requirejs/require.js"></script>
 <script src="./dist/requireConfig.js"></script>
 <link rel="stylesheet" href="../lib/bootstrap/dist/css/bootstrap.css"></link>
 <link rel="stylesheet" href="../lib/leaflet/dist/leaflet.css"></link>
@@ -13,21 +13,8 @@
 
 </body>
 <script>
-    requirejs(['bootstrap'])
-    requirejs(['App',"Vicroad/Bar","Map/SmartMap"],function(app,Bar,Map){
-        var app=app.getInstance()
-        app.setStyle({height:"100%",width:"100%"})
-      
-        var bar = new Bar ()
-        var map= new Map()
-        map.setStyle({height:"100%",width:"100%"})
-        app.add(bar)
-        app.add(map)
-        // var style = {position:"relative",top:"20px"}
-        // bar.setStyle(style)
-       
-        app.render()
-    })
+    requirejs(['bootstrap',"dist/Vicroad/main"])
+  
 </script>
 <style>
 
