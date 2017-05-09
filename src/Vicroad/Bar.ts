@@ -1,4 +1,4 @@
-import Component=require("../Component")
+import Component=require("../Framework/Component")
 import d3= require("d3")
 import $=require("jquery")
 import template = require ('text!./Bar.html')
@@ -19,6 +19,7 @@ export class Bar extends Component{
     }
     optionClicked(e){
         let id= $(e.target).attr("value")
+        this.fire("optionChange",{id:id})
         $(this.el).find(".options-text").text($(e.target).text())
         $(this.el).find("#"+id+"-modal").modal("show")
     }

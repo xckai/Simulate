@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../Component", "underscore", "leaflet"], function (require, exports, Component, _, L) {
+define(["require", "exports", "../Component", "underscore", "leaflet", "./SmartLayer"], function (require, exports, Component, _, L, SmartLayer_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var SmartMap = (function (_super) {
@@ -17,37 +17,38 @@ define(["require", "exports", "../Component", "underscore", "leaflet"], function
             var _this = _super.call(this, conf) || this;
             _this.setStyle({ height: "100%", width: "100%" });
             _this.layers = [];
+            _this.leaflet = L.map(_this.el);
             return _this;
         }
         SmartMap.prototype.setMapSetting = function (s) {
             this.mapSetting = s;
-            var base = L.tileLayer(this.mapSetting.baseLayer.mapUrl, {
+            var base = new SmartLayer_1.SmartLayer({ id: "base" });
+            base.layer = L.tileLayer(this.mapSetting.baseLayer.mapUrl, {
                 maxZoom: this.mapSetting.baseLayer.maxZoom
             });
-            this.addLayer("base", base);
+            this.addLayer(base);
         };
         SmartMap.prototype.renderer = function () {
             // let mapContainer=$("<div></div>").css(this.style)
             // $(this.el).append(mapContainer)
-            // this.map=L.map(mapContainer[0])
-            //             this.map.setView([51.505, -0.09], 13);
+            // this.leaflet=L.leaflet(mapContainer[0])
+            //             this.leaflet.setView([51.505, -0.09], 13);
             return this.el;
         };
         SmartMap.prototype.afterRender = function () {
             var _this = this;
-            this.map = L.map(this.el);
-            this.map.setView(this.mapSetting.center, this.mapSetting.zoom);
-            _.each(this.layers, function (l) { return l.layer.addTo(_this.map); });
+            this.leaflet.setView(this.mapSetting.center, this.mapSetting.zoom);
+            _.each(this.layers, function (l) { return l.addTo(_this.leaflet); });
         };
-        SmartMap.prototype.addLayer = function (id, l) {
-            this.removeLayer(id);
-            var o = { id: id, layer: l };
-            this.layers.push(o);
+        SmartMap.prototype.addLayer = function (l) {
+            this.removeLayer(l.id);
+            this.listenTo(l);
+            this.layers.push(l);
         };
         SmartMap.prototype.getLayer = function (id) {
             var ls = _.where(this.layers, { id: id });
             if (ls.length > 0) {
-                return ls[0].layer;
+                return ls;
             }
             else {
                 return null;

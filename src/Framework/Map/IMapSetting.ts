@@ -1,4 +1,4 @@
-export interface MapSetting{
+export interface IMapSetting{
     center:{lat:number,lng:number},
     zoom:number,
     baseLayer:{

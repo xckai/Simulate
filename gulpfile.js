@@ -10,18 +10,14 @@ gulp.task('start', function() {
   //   console.log(out);
   // })
  // var ls   = spawn("tsc",["-w"], {stdio : "inherit"});
-  browserSync.init({server:{baseDir:"./",index:"dist/index.html"}});
-  gulp.watch("./dist/**/*.js",function(e){
-        browserSync.reload();
-        console.log(e.path+"-------file changed")
-        
-    });
-     gulp.src('./src/**/*.html',{base:"src"}).pipe(gulp.dest('./dist/'))
-        gulp.watch("./src/**/*.html",function(e){
+  browserSync.init({server:{baseDir:"./",index:"dist/Vicroad/index.html"}});
+ 
+  gulp.src(['./src/**/*.html','./src/**/*.js'],{base:"src"}).pipe(gulp.dest('./dist/'))
+  gulp.watch(['./src/**/*.html','./src/**/*.js'],function(e){
            gulp.src(e.path,{base:"src"}).pipe(gulp.dest('./dist/'))
 
             console.log(e.path+"-------file changed")
-        })
+  })
   // gulp.watch("*.less",function(event){
   //   var file=event.path;
   //   if(event.type==="changed"|| event.type==="added"){
@@ -32,14 +28,15 @@ gulp.task('start', function() {
   //   }
    
   // })
+   gulp.watch("./dist/**/*.js",function(e){
+        browserSync.reload();
+        console.log(e.path+"-------file changed")
+        
+  });
 });
 
 gulp.task("copyHTML",function(){
-        gulp.src('./src/**/*.html',{base:"src"}).pipe(gulp.dest('./dist/'))
-        gulp.watch("./src/**/*.html",function(e){
-           gulp.src(e.path,{base:"src"}).pipe(gulp.dest('./dist/'))
-           browserSync.reload();
-        })
+        gulp.src(['./src/**/*.html','./src/**/*.js'],{base:"src"}).pipe(gulp.dest('./dist/'))
         console.log("copying")
 })
 

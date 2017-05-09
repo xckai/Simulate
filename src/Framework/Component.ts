@@ -1,7 +1,6 @@
 import {Evented} from "./Evented"
 import _ =require("underscore")
 import $= require("jquery")
-import {Style} from "./Style"
 import d3=require("d3")
 export =class Component extends Evented{
     constructor(conf?){  
@@ -53,18 +52,21 @@ export =class Component extends Evented{
         }
         return this
     }
-    addTo(c:Component){
+    addTo(c:Component,listen?){
         this.parent=c
-        this.parent.add(this)
+        this.parent.add(this,listen)
         return this
     }
-    add(nc:Component){
+    add(nc:Component,listen?){
        let i=_.findIndex(this.children,c=>c.config.id==nc.config.id)
        nc.parent=this
        if(i==-1){
            this.children.push(nc)
        }else{
            this.children[i]=nc
+       }
+       if(listen){
+           this.listenTo(nc)
        }
        return this
     }

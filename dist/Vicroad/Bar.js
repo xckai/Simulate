@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../Component", "jquery", "text!./Bar.html"], function (require, exports, Component, $, template) {
+define(["require", "exports", "../Framework/Component", "jquery", "text!./Bar.html"], function (require, exports, Component, $, template) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Bar = (function (_super) {
@@ -30,6 +30,7 @@ define(["require", "exports", "../Component", "jquery", "text!./Bar.html"], func
         };
         Bar.prototype.optionClicked = function (e) {
             var id = $(e.target).attr("value");
+            this.fire("optionChange", { id: id });
             $(this.el).find(".options-text").text($(e.target).text());
             $(this.el).find("#" + id + "-modal").modal("show");
         };

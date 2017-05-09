@@ -1,5 +1,5 @@
-import {MapSetting} from "../Map/MapSetting"
-let s:MapSetting= {
+import {IMapSetting} from "../Framework/Map/IMapSetting"
+let s:IMapSetting= {
     center:{lat:31.2,lng:121},
     zoom:9,
     baseLayer:{

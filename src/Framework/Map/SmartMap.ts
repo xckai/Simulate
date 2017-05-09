@@ -1,46 +1,50 @@
 import Component=require("../Component")
 import _ =require("underscore")
-import L= require("leaflet")
-import {MapSetting} from "../Map/MapSetting"
+import L=require("leaflet")
+import {SmartLayer} from"./SmartLayer"
+import {IMapSetting} from "../Map/IMapSetting"
 export class SmartMap extends Component{
     constructor(conf?){
         super(conf)
         this.setStyle({height:"100%",width:"100%"})
         this.layers=[]
+         this.leaflet=L.map(this.el)
        
     }
     setMapSetting(s){
           this.mapSetting=s
-         let base= L.tileLayer(this.mapSetting.baseLayer.mapUrl, {
+         let base= new SmartLayer({id:"base"})
+         base.layer=L.tileLayer(this.mapSetting.baseLayer.mapUrl, {
                         maxZoom: this.mapSetting.baseLayer.maxZoom
                     })
-         this.addLayer("base",base)
+         
+         this.addLayer(base)
     }
-    mapSetting:MapSetting
-    map:L.Map
+    mapSetting:IMapSetting
+    leaflet:L.Map
     renderer(){
         // let mapContainer=$("<div></div>").css(this.style)
         // $(this.el).append(mapContainer)
-        // this.map=L.map(mapContainer[0])
-        //             this.map.setView([51.505, -0.09], 13);
+        // this.leaflet=L.leaflet(mapContainer[0])
+        //             this.leaflet.setView([51.505, -0.09], 13);
                    
         return this.el
     }
     afterRender(){
-         this.map=L.map(this.el)
-                    this.map.setView(this.mapSetting.center, this.mapSetting.zoom);
-          _.each(this.layers,(l)=>l.layer.addTo(this.map))
+        
+          this.leaflet.setView(this.mapSetting.center, this.mapSetting.zoom);
+          _.each(this.layers,(l)=>l.addTo(this.leaflet))
     }
-    layers:any[]
-    addLayer(id:string,l:L.Layer){
-        this.removeLayer(id)
-        let o={id:id,layer:l}
-        this.layers.push(o)
+    layers:SmartLayer []
+    addLayer(l:SmartLayer){
+        this.removeLayer(l.id)
+        this.listenTo(l)
+        this.layers.push(l)
     }
     getLayer(id:string){
         let ls=_.where(this.layers,{id:id})
         if(ls.length>0){
-            return ls[0].layer
+            return ls
         }else{
             return null
         }

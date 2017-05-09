@@ -60,12 +60,12 @@ define(["require", "exports", "./Evented", "underscore", "jquery", "d3"], functi
             }
             return this;
         };
-        Component.prototype.addTo = function (c) {
+        Component.prototype.addTo = function (c, listen) {
             this.parent = c;
-            this.parent.add(this);
+            this.parent.add(this, listen);
             return this;
         };
-        Component.prototype.add = function (nc) {
+        Component.prototype.add = function (nc, listen) {
             var i = _.findIndex(this.children, function (c) { return c.config.id == nc.config.id; });
             nc.parent = this;
             if (i == -1) {
@@ -73,6 +73,9 @@ define(["require", "exports", "./Evented", "underscore", "jquery", "d3"], functi
             }
             else {
                 this.children[i] = nc;
+            }
+            if (listen) {
+                this.listenTo(nc);
             }
             return this;
         };
