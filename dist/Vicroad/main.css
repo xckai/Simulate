@@ -1,0 +1,28 @@
+.leaflet-popup-content {
+  width: inherit !important;
+}
+.busy-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.busy {
+  pointer-events: none;
+}
+.textloader span {
+  top: 20px;
+  display: inline-block;
+  font-family: 'Titan One', cursive;
+  font-size: 40px;
+  color: #FFF;
+  text-shadow: 0 1px 0 #CCC, 0 2px 0 #CCC, 0 3px 0 #CCC, 0 4px 0 #CCC, 0 5px 0 #CCC, 0 6px 0 transparent, 0 7px 0 transparent, 0 8px 0 transparent, 0 9px 0 transparent, 0 10px 10px #000000;
+}
+.ball {
+  background: radial-gradient(circle at 50% 30%, red, black);
+}
+.shadow {
+  background: radial-gradient(ellipse 100% 80%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1) 60%, rgba(0, 0, 0, 0) 65%);
+}
