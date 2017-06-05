@@ -1,5 +1,6 @@
 define(["require", "exports", "underscore"], function (require, exports, _) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Util;
     (function (Util) {
         function isEndWith(s, ed) {
@@ -182,6 +183,155 @@ define(["require", "exports", "underscore"], function (require, exports, _) {
             }
         }
         Util.enableAutoResize = enableAutoResize;
-    })(Util || (Util = {}));
-    return Util;
+        function addKeyFrames(frameData) {
+            var frameName = frameData.name || "";
+            var css = "";
+            css += ("@-webkit-keyframes " + frameName + "{");
+            for (var key in frameData) {
+                if (key !== "name" && key !== "media" && key !== "complete") {
+                    css += key + " {";
+                    for (var property in frameData[key]) {
+                        css += property + ":" + frameData[key][property] + ";";
+                    }
+                    css += "}";
+                }
+            }
+            css += "}";
+            var ssDom = $("style#" + frameName);
+            if (ssDom.length > 0) {
+                ssDom.html(css);
+            }
+            else {
+                ssDom = $("<style></style>").attr({ "id": frameName, type: "text/css" })
+                    .html(css).appendTo("head");
+            }
+        }
+        Util.addKeyFrames = addKeyFrames;
+        function genBusyDiv(width, height, i, color) {
+            var $div = $("<div class='busyContainer'></div>").css({
+                position: "absolute",
+                top: "0px",
+                bottom: "0px",
+                left: "0px",
+                right: "0px",
+                display: "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "z-index": 1000,
+                background: "rgba(0,0,0,.5)"
+            });
+            var c = $("<div></div>").css({
+                display: "inline-flex"
+            });
+            var w = Math.min(width, height) / 10;
+            for (var ii = 0; ii < i; ++ii) {
+                var t = $("<div></div>");
+                t.css({
+                    width: w + "px",
+                    height: w + "px",
+                    background: color || "blue",
+                    margin: 0.6 * w + "px",
+                    "border-radius": "100%",
+                    animation: "shake 1s ease-in-out+" + 2 * ii / i + "s infinite  alternate"
+                });
+                c.append(t);
+            }
+            var beginkey = 100 / i + "%", endkey = 300 / i + "%", frame = {
+                name: "shake",
+                from: { "-webkit-transform": "scale(1); " },
+                "to": { "-webkit-transform": "scale(2); " }
+            };
+            // frame[beginkey]={ "-webkit-transform":"scale(2); "}
+            // frame[endkey]={ "-webkit-transform":"scale(1); "}
+            addKeyFrames(frame);
+            $div.append(c);
+            return $div.get(0);
+        }
+        Util.genBusyDiv = genBusyDiv;
+        function BounceBusyDiv(width, height, i, color, str) {
+            var $div = $("<div class='busyContainer'></div>").css({
+                position: "absolute",
+                top: "0px",
+                bottom: "0px",
+                left: "0px",
+                right: "0px",
+                display: "flex",
+                "align-items": "center",
+                "justify-content": "center",
+                "z-index": 1000,
+                background: "linear-gradient(to left, #76b852 , #8DC26F)"
+            });
+            var cc = $("<div></div>").css({
+                display: "inline",
+            });
+            var ball = $("<div></div>"), shadow = $("<div></div>");
+            ball.css({
+                width: "30px",
+                height: "30px",
+                "border-radius": "100%",
+                "z-index": 20,
+                position: "relative",
+                animation: "bounce 1.5s ease-in-out 0s infinite",
+                margin: "0px auto"
+            }).addClass("ball");
+            shadow.css({
+                width: "30px",
+                height: "15px",
+                "border-radius": "100%",
+                "z-index": 1,
+                position: "relative",
+                top: "-10px",
+                animation: "scaleout 1.5s ease-in-out 0s infinite"
+            }).addClass("shadow");
+            addKeyFrames({
+                name: "bounce",
+                from: { "-webkit-transform": "translate(0px,0px); " },
+                "50%": { "-webkit-transform": "translate(0px,-40px)" },
+                "to": { "-webkit-transform": "translate(0px,0px);" }
+            });
+            addKeyFrames({
+                name: "scaleout",
+                from: { "-webkit-transform": "scale(0) translate(0px ,0px); " },
+                "50%": { "-webkit-transform": "scale(1) translate(0px ,2px); " },
+                "to": { "-webkit-transform": "scale(0) translate(0px ,0px); " }
+            });
+            // let c=$("<div></div>").css({
+            //     display:"inline-flex"
+            // })
+            // let w=Math.min(width,height)/10
+            // for(let ii=0;ii<i;++ii){
+            //     let t=$("<div></div>")
+            //     t.css({
+            //         width:w+"px",
+            //         height:w+"px",
+            //         background:color||"blue",
+            //         margin:0.6*w+"px",
+            //         "border-radius":"100%",
+            //         animation:"bounce+"+i/2+"s linear+"+ii/2+"s infinite"
+            //     })
+            //     c.append(t)
+            // }
+            // let beginkey=50/i +"%",endkey=150/i +"%",frame={
+            //         name:"bounce",
+            //         from:{"-webkit-transform":"scale(1); "},
+            //         "to":{ "-webkit-transform":"scale(1); "}
+            //     }
+            // frame[beginkey]={ "-webkit-transform":"scale(2); "}
+            // //frame[endkey]={ "-webkit-transform":"scale(1); "}
+            // addKeyFrames(frame)
+            cc.append(ball).append(shadow).appendTo($div);
+            if (str) {
+                var text = $("<div></div>").appendTo($div).css({
+                    margin: "0px 40px",
+                    "padding-bottom": "20px"
+                }).addClass("textloader");
+                var h1_1 = $("<h1></h1>").appendTo(text);
+                _.each(str, function (s) {
+                    h1_1.append("<span>" + s + "</span>");
+                });
+            }
+            return $div.get(0);
+        }
+        Util.BounceBusyDiv = BounceBusyDiv;
+    })(Util = exports.Util || (exports.Util = {}));
 });

@@ -1,14 +1,29 @@
-import Component=require("../Component")
-import _ =require("underscore")
+import {Component} from "../Component"
+import _ =require("lodash")
 import L=require("leaflet")
+import $=require("jquery")
 import {SmartLayer} from"./SmartLayer"
 import {IMapSetting} from "../Map/IMapSetting"
+import {Util}from "../Util"
+import {MapElement} from "./MapElement"
 export class SmartMap extends Component{
-    constructor(conf?){
-        super(conf)
-        this.setStyle({height:"100%",width:"100%"})
+    constructor(id?,c?){
+        super(id == undefined ? _.uniqueId("Map") : id, c)
+        //this.setStyle({position:"absolute"})
         this.layers=[]
-         this.leaflet=L.map(this.el)
+        // let mapContainer= $("<div></div>").css({
+        //     width:"100%",
+        //     height:"100%"
+        // }).get(0)
+        this.rootElement=new MapElement()
+        this.rootElement.attr({id:this.id}).style(this.config.style).addClass(this.config.class)
+        // let $div=$("<div></div>").css({
+        //     right:"0px",top:"0px",bottom:"0px",left:"0px",
+        //     position:"absolute"
+        // })
+        // this.$el.append($div)
+       
+        
        
     }
     setMapSetting(s){
@@ -20,18 +35,12 @@ export class SmartMap extends Component{
          
          this.addLayer(base)
     }
+    rootElement:MapElement
     mapSetting:IMapSetting
     leaflet:L.Map
-    renderer(){
-        // let mapContainer=$("<div></div>").css(this.style)
-        // $(this.el).append(mapContainer)
-        // this.leaflet=L.leaflet(mapContainer[0])
-        //             this.leaflet.setView([51.505, -0.09], 13);
-                   
-        return this.el
-    }
+
     afterRender(){
-        
+          this.leaflet=L.map(this.rootElement.getMapNode$().get(0),{scrollWheelZoom:true})
           this.leaflet.setView(this.mapSetting.center, this.mapSetting.zoom);
           _.each(this.layers,(l)=>l.addTo(this.leaflet))
     }
@@ -42,17 +51,22 @@ export class SmartMap extends Component{
         this.layers.push(l)
     }
     getLayer(id:string){
-        let ls=_.where(this.layers,{id:id})
-        if(ls.length>0){
+        let ls=_.find(this.layers,{id:id})
+        if(ls!=undefined){
             return ls
         }else{
             return null
         }
     }
     removeLayer(id:string){
-        let ls=_.where(this.layers,{id:id})
+        let ls=_.find(this.layers,{id:id})
         _.each(ls,o=>o.layer.remove())
-        this.layers=_.filter(this.layers,o=>o.id!=id)
+            this.layers=_.filter(this.layers,o=>o.id!=id)
         return this
     }
+    // setBusy(){
+    //     this.$el.append(Util.genBusyDiv(200,200,3))
+    //     //this.$el.append(Util.BounceBusyDiv(200,200,4,undefined,"Loading"))
+    //     this.$el.addClass("busy")
+    // }
 }

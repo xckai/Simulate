@@ -1,6 +1,5 @@
 import _ =require("underscore")
-export =Util
-module Util{
+export module Util{
 export function isEndWith(s:any,ed:string){
     let ss= s.toString();
     let matcher= new RegExp(ed+"$")
@@ -173,5 +172,158 @@ export function enableAutoResize(dom:any,fn){
            }
             oldWidth=dom.offsetWidth,oldHeight=dom.offsetHeight
         }
+    }
+    export function addKeyFrames(frameData){
+        let frameName=frameData.name||""
+        let css=""
+        css+=("@-webkit-keyframes "+frameName+"{")
+          for (var key in frameData) {
+                if (key !== "name" && key !== "media" && key !== "complete") {
+                    css += key + " {";
+
+                    for (var property in frameData[key]) {
+                        css += property + ":" + frameData[key][property] + ";";
+                    }
+
+                    css += "}";
+                }
+            }
+        css+="}"
+        let ssDom=$("style#" + frameName)
+        if(ssDom.length>0){
+            ssDom.html(css)
+        }else{
+            ssDom=$("<style></style>").attr({"id":frameName,type: "text/css"})
+                .html(css).appendTo("head")
+        }
+    }
+    export function genBusyDiv(width,height,i,color?){
+        let $div=$("<div class='busyContainer'></div>").css({
+            position:"absolute",
+            top:"0px",
+            bottom:"0px",
+            left:"0px",
+            right:"0px",
+            display:"flex",
+            "align-items":"center",
+            "justify-content":"center",
+            "z-index":1000,
+            background:"rgba(0,0,0,.5)"
+        })
+        let c=$("<div></div>").css({
+            display:"inline-flex"
+        })
+        let w=Math.min(width,height)/10
+        for(let ii=0;ii<i;++ii){
+            let t=$("<div></div>")
+            t.css({
+                width:w+"px",
+                height:w+"px",
+                background:color||"blue",
+                margin:0.6*w+"px",
+                "border-radius":"100%",
+                animation:"shake 1s ease-in-out+"+2*ii/i+"s infinite  alternate"
+            })
+            
+            c.append(t)
+        }
+        let beginkey=100/i +"%",endkey=300/i +"%",frame={
+                name:"shake",
+                from:{"-webkit-transform":"scale(1); "},
+                "to":{ "-webkit-transform":"scale(2); "}
+            }
+       // frame[beginkey]={ "-webkit-transform":"scale(2); "}
+       // frame[endkey]={ "-webkit-transform":"scale(1); "}
+        addKeyFrames(frame)
+        $div.append(c)
+        return $div.get(0)
+    }
+    export function BounceBusyDiv(width,height,i,color?,str?){
+        let $div=$("<div class='busyContainer'></div>").css({
+            position:"absolute",
+            top:"0px",
+            bottom:"0px",
+            left:"0px",
+            right:"0px",
+            display:"flex",
+            "align-items":"center",
+            "justify-content":"center",
+            "z-index":1000,
+            background: "linear-gradient(to left, #76b852 , #8DC26F)"
+        })
+        let cc=$("<div></div>").css({
+            display:"inline",
+        })
+        let ball=$("<div></div>"),shadow=$("<div></div>")
+        ball.css({
+            width:"30px",
+            height:"30px",
+            "border-radius":"100%",
+            "z-index":20,
+            position:"relative",
+            animation:"bounce 1.5s ease-in-out 0s infinite",
+            margin: "0px auto"
+        }).addClass("ball")
+        shadow.css({
+            width:"30px",
+            height:"15px",
+            "border-radius":"100%",
+            "z-index":1,
+            position:"relative",
+            top:"-10px",
+            animation:"scaleout 1.5s ease-in-out 0s infinite"
+        }).addClass("shadow")
+        addKeyFrames({
+             name:"bounce",
+                from:{"-webkit-transform":"translate(0px,0px); "},
+                "50%":{ "-webkit-transform":"translate(0px,-40px)"},
+                "to":{ "-webkit-transform":"translate(0px,0px);"}
+        }) 
+        addKeyFrames({
+             name:"scaleout",
+                from:{"-webkit-transform":"scale(0) translate(0px ,0px); "},
+                "50%":{ "-webkit-transform":"scale(1) translate(0px ,2px); "},
+                "to":{ "-webkit-transform":"scale(0) translate(0px ,0px); "}
+        })
+        // let c=$("<div></div>").css({
+        //     display:"inline-flex"
+        // })
+        // let w=Math.min(width,height)/10
+        // for(let ii=0;ii<i;++ii){
+        //     let t=$("<div></div>")
+        //     t.css({
+        //         width:w+"px",
+        //         height:w+"px",
+        //         background:color||"blue",
+        //         margin:0.6*w+"px",
+        //         "border-radius":"100%",
+        //         animation:"bounce+"+i/2+"s linear+"+ii/2+"s infinite"
+        //     })
+            
+        //     c.append(t)
+        // }
+        // let beginkey=50/i +"%",endkey=150/i +"%",frame={
+        //         name:"bounce",
+        //         from:{"-webkit-transform":"scale(1); "},
+        //         "to":{ "-webkit-transform":"scale(1); "}
+        //     }
+        // frame[beginkey]={ "-webkit-transform":"scale(2); "}
+        // //frame[endkey]={ "-webkit-transform":"scale(1); "}
+        // addKeyFrames(frame)
+      
+        cc.append(ball).append(shadow).appendTo($div)
+        if(str){
+             let text=$("<div></div>").appendTo($div).css({
+                 margin:"0px 40px",
+                "padding-bottom": "20px"
+             }).addClass("textloader")
+             let h1=$("<h1></h1>").appendTo(text)
+             _.each(str,s=>{
+                 h1.append("<span>"+s+"</span>")
+             })
+        }
+       
+
+        return $div.get(0)
     }
 }

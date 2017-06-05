@@ -12,11 +12,15 @@ gulp.task('start', function() {
  // var ls   = spawn("tsc",["-w"], {stdio : "inherit"});
   browserSync.init({server:{baseDir:"./",index:"dist/Vicroad/index.html"}});
  
-  gulp.src(['./src/**/*.html','./src/**/*.js'],{base:"src"}).pipe(gulp.dest('./dist/'))
+  gulp.src(['./src/**/*.html','./src/**/*.js','./src/**/*.css'],{base:"src"}).pipe(gulp.dest('./dist/'))
   gulp.watch(['./src/**/*.html','./src/**/*.js'],function(e){
            gulp.src(e.path,{base:"src"}).pipe(gulp.dest('./dist/'))
 
             console.log(e.path+"-------file changed")
+  })
+   gulp.watch('./src/**/*.less',function(e){
+    gulp.src(e.path,{base:"src"}).pipe(less()).pipe(gulp.dest("./dist/"))
+     console.log(e.path+"-------css changed")
   })
   // gulp.watch("*.less",function(event){
   //   var file=event.path;
@@ -34,7 +38,9 @@ gulp.task('start', function() {
         
   });
 });
-
+gulp.task("css",function(){
+ 
+})
 gulp.task("copyHTML",function(){
         gulp.src(['./src/**/*.html','./src/**/*.js'],{base:"src"}).pipe(gulp.dest('./dist/'))
         console.log("copying")

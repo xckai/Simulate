@@ -7,7 +7,8 @@
                 jquery:"../lib/jquery/dist/jquery",
                 bootstrap:"../lib/bootstrap/dist/js/bootstrap",
                 d3:"../lib/d3/d3",
-                text : "../lib/text/text"
+                text : "../lib/text/text",
+                lodash:"../lib/lodash/dist/lodash"
         },
         shim:{
                 leaflet:{
@@ -18,6 +19,9 @@
                 },
                 bootstrap:{
                         deps:["jquery"]
+                },
+                "lodash":{
+                        exports: "_"
                 }
         }
         

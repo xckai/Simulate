@@ -1,55 +1,60 @@
 import {Evented} from "./Evented"
-import _ =require("underscore")
+import _ =require("lodash")
 import $= require("jquery")
 import d3=require("d3")
-export =class Component extends Evented{
-    constructor(conf?){  
+import {Util} from "./Util"
+import {BallLoader} from "./Animation"
+import {BaseElement} from "./BaseElement"
+export class Component extends Evented{
+    constructor(id?,conf?){  
         super()
+        if(id!=undefined){
+            this.id=id
+        }else{
+            this.id=_.uniqueId("component")
+        }
         this.setConfig(conf)
-        if(!this.config.id){
-            this.config.id=_.uniqueId("component")
-        }
-        let fragment=document.createDocumentFragment()
-        this.el=d3.select(fragment).append("xhtml:div").node()
-        this.updateConfig()
-        
+        this.rootElement=new BaseElement("section")
+        this.rootElement.attr({id:this.id}).style(this.config.style).addClass(this.config.class)
+        //let fragment=document.createDocumentFragment()
+        // this.$el=$("<section></section>")
+        // this.el=this.$el.get(0)
+        /////init element
+        // _.each(this.config.class,c=>this.$el.addClass(c))
+        // this.$el.css(this.config.style)
+        // this.$el.attr("id",this.id)
     }
-    setConfig(c?){
-        if(c){
-            _.each(c,(v,k)=>{
-                this.config[k]=v
-            })
-        }
+    protected setConfig(c){
+      
+         this.config=_.assign(this.config,c)
+    
        return this
     }
-    updateConfig(){
-        if(this.config.className){
-            d3.select(this.el).classed(this.config.className,true)
-        }
-        d3.select(this.el).attr("id",this.config.id)
-    }
-    config={
-        id:null,
-        className:null
-    }
-    protected style:{}
-    protected el:any
+    rootElement:BaseElement
+    id:string
+    config:IComponentConfig={
+                                class:[],
+                                style:{
+                                    position:"absolute",
+                                    left:"0px",
+                                    right:"0px",
+                                    top:"0px",
+                                    bottom:"0px",
+                                    display:"inhert"
+                            
+                                    }
+                                }
+    // protected el:any
+    // protected $el:JQuery
     protected isRendered:boolean=false
     protected children:Component []=[]
     protected parent:Component
     setStyle(s){
-        if(!this.style){
-            this.style={}
-        }
-        _.each(s,(v,k)=>{
-            this.style[k]=v
-        })
+        this.config.style=_.assign(this.config.style,s)
         this.updateStyle()
     }
     updateStyle(){
-        if(this.el){
-            $(this.el).css(this.style)
-        }
+        this.rootElement.style(this.config.style)
         return this
     }
     addTo(c:Component,listen?){
@@ -58,7 +63,7 @@ export =class Component extends Evented{
         return this
     }
     add(nc:Component,listen?){
-       let i=_.findIndex(this.children,c=>c.config.id==nc.config.id)
+       let i=_.findIndex(this.children,c=>c.id==nc.id)
        nc.parent=this
        if(i==-1){
            this.children.push(nc)
@@ -70,24 +75,55 @@ export =class Component extends Evented{
        }
        return this
     }
-    getContainer(){
-        return this.el 
+    getRootElement(){
+        return this.rootElement
     }
     render(){
-        if(this.parent){
-            this.el=this.renderer()
-            $(this.parent.getContainer()).append(this.el)
-            _.each(this.children,c=>{
+        this._beforeRender()
+        _.each(this.children,(c)=>{
                 c.render()
             })
+        this.rootElement.toHtml()
+       
+        if(this.parent){
+            this.parent.getRootElement().get$Node().append(this.rootElement.get$Node())
         }
-        return this
+         this._afterRender()
+    }
+    _beforeRender(){
+        this.beforeRender()
+        _.invoke(this.children,"beforeRender")
+    }
+    beforeRender(){
+
+    }
+    _afterRender(){
+        this.afterRender()
+        _.invoke(this.children,"_afterRender")
     }
     afterRender(){
 
     }
-    renderer(){
-        this.updateStyle()
-        return this.el
+    // renderer(){
+    //     this.updateStyle()
+    //     return this.el
+    // }
+    setBusy(){
+      let a=  new BallLoader()
+      a.setConfig({$root:this.rootElement.get$Node()})
+      a.show()
+       // this.$el.append(Util.BounceBusyDiv(200,200,3))
+      this.rootElement.addClass("busy")
     }
+}
+export interface IComponentConfig{
+            class:string [],
+            style:{
+                    position:string,
+                    left:string,
+                    right:string,
+                    top:string,
+                    bottom:string,
+                    display:string
+            }
 }

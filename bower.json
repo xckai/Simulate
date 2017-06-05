@@ -13,6 +13,8 @@
     "leaflet": "~1.0.0",
     "requirejs": "^2.3.3",
     "d3": "^4.8.0",
-    "text": "requirejs-text#^2.0.15"
+    "text": "requirejs-text#^2.0.15",
+    "eonasdan-bootstrap-datetimepicker": "bs-datetimepicker#^4.17.47",
+    "lodash": "^4.17.4"
   }
 }

@@ -12,11 +12,13 @@ export class InteractiveLayer extends SmartLayer{
     layer:L.LayerGroup
     addLines(){
         let l=new Line([{lat:31.2,lng:121},{lat:31.5,lng:121.5}],{weight:3})
+        
         let f=d3.select(document.createDocumentFragment())
-        let ul=f.append("xhtml:ul").classed("dropdown-menu",true)
-        ul.append("xhtml:li").text("haha")
+        // let ul=f.append("xhtml:ul").classed("dropdown-menu",true)
+        // ul.append("xhtml:li").text("haha")
         let dropbox=new DropBox()
         dropbox.setData([{value:"+10%"},{value:"+5%"},{value:"-5%"},{value:"+10%"}])
+        
         l.bindPopup(dropbox.toElement())
         this.layer.addLayer(l)
         return this

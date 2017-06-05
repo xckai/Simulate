@@ -8,19 +8,29 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./Component", "jquery", "underscore"], function (require, exports, Component, $, _) {
+define(["require", "exports", "./Component", "jquery", "lodash"], function (require, exports, Component_1, $, _) {
     "use strict";
     var App = (function (_super) {
         __extends(App, _super);
-        function App(conf) {
-            var _this = _super.call(this, conf) || this;
+        function App(id, conf) {
+            var _this = _super.call(this, id == undefined ? _.uniqueId("App") : id, conf) || this;
             _this.config = {
-                id: null,
-                className: "AppContainer",
-                element: "body"
+                class: [],
+                style: {
+                    position: "absolute",
+                    left: "0px",
+                    right: "0px",
+                    top: "0px",
+                    bottom: "0px",
+                    display: "inhert",
+                },
+                appendElement: "body"
             };
-            _this.updateConfig();
+            _this.setConfig(conf);
+            $(_this.config.appendElement).append(_this.rootElement.get$Node());
+            _this.render();
             return _this;
+            //let fragment=document.createDocumentFragment()
         }
         App.prototype.getInstance = function () {
             if (!window._app) {
@@ -28,14 +38,8 @@ define(["require", "exports", "./Component", "jquery", "underscore"], function (
             }
             return window._app;
         };
-        App.prototype.render = function () {
-            _.each(this.children, function (c) { return c.render(); });
-            $("body").append(this.el);
-            _.invoke(this.children, "afterRender");
-            return this;
-        };
         return App;
-    }(Component));
+    }(Component_1.Component));
     return {
         getInstance: function (config) {
             if (!window._app) {

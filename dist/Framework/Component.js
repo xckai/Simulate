@@ -8,56 +8,56 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./Evented", "underscore", "jquery", "d3"], function (require, exports, Evented_1, _, $, d3) {
+define(["require", "exports", "./Evented", "lodash", "./Animation", "./BaseElement"], function (require, exports, Evented_1, _, Animation_1, BaseElement_1) {
     "use strict";
-    return (function (_super) {
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Component = (function (_super) {
         __extends(Component, _super);
-        function Component(conf) {
+        function Component(id, conf) {
             var _this = _super.call(this) || this;
             _this.config = {
-                id: null,
-                className: null
+                class: [],
+                style: {
+                    position: "absolute",
+                    left: "0px",
+                    right: "0px",
+                    top: "0px",
+                    bottom: "0px",
+                    display: "inhert"
+                }
             };
+            // protected el:any
+            // protected $el:JQuery
             _this.isRendered = false;
             _this.children = [];
-            _this.setConfig(conf);
-            if (!_this.config.id) {
-                _this.config.id = _.uniqueId("component");
+            if (id != undefined) {
+                _this.id = id;
             }
-            var fragment = document.createDocumentFragment();
-            _this.el = d3.select(fragment).append("xhtml:div").node();
-            _this.updateConfig();
+            else {
+                _this.id = _.uniqueId("component");
+            }
+            _this.setConfig(conf);
+            _this.rootElement = new BaseElement_1.BaseElement("section");
+            _this.rootElement.attr({ id: _this.id }).style(_this.config.style).addClass(_this.config.class);
             return _this;
+            //let fragment=document.createDocumentFragment()
+            // this.$el=$("<section></section>")
+            // this.el=this.$el.get(0)
+            /////init element
+            // _.each(this.config.class,c=>this.$el.addClass(c))
+            // this.$el.css(this.config.style)
+            // this.$el.attr("id",this.id)
         }
         Component.prototype.setConfig = function (c) {
-            var _this = this;
-            if (c) {
-                _.each(c, function (v, k) {
-                    _this.config[k] = v;
-                });
-            }
+            this.config = _.assign(this.config, c);
             return this;
         };
-        Component.prototype.updateConfig = function () {
-            if (this.config.className) {
-                d3.select(this.el).classed(this.config.className, true);
-            }
-            d3.select(this.el).attr("id", this.config.id);
-        };
         Component.prototype.setStyle = function (s) {
-            var _this = this;
-            if (!this.style) {
-                this.style = {};
-            }
-            _.each(s, function (v, k) {
-                _this.style[k] = v;
-            });
+            this.config.style = _.assign(this.config.style, s);
             this.updateStyle();
         };
         Component.prototype.updateStyle = function () {
-            if (this.el) {
-                $(this.el).css(this.style);
-            }
+            this.rootElement.style(this.config.style);
             return this;
         };
         Component.prototype.addTo = function (c, listen) {
@@ -66,7 +66,7 @@ define(["require", "exports", "./Evented", "underscore", "jquery", "d3"], functi
             return this;
         };
         Component.prototype.add = function (nc, listen) {
-            var i = _.findIndex(this.children, function (c) { return c.config.id == nc.config.id; });
+            var i = _.findIndex(this.children, function (c) { return c.id == nc.id; });
             nc.parent = this;
             if (i == -1) {
                 this.children.push(nc);
@@ -79,25 +79,44 @@ define(["require", "exports", "./Evented", "underscore", "jquery", "d3"], functi
             }
             return this;
         };
-        Component.prototype.getContainer = function () {
-            return this.el;
+        Component.prototype.getRootElement = function () {
+            return this.rootElement;
         };
         Component.prototype.render = function () {
+            this._beforeRender();
+            _.each(this.children, function (c) {
+                c.render();
+            });
+            this.rootElement.toHtml();
             if (this.parent) {
-                this.el = this.renderer();
-                $(this.parent.getContainer()).append(this.el);
-                _.each(this.children, function (c) {
-                    c.render();
-                });
+                this.parent.getRootElement().get$Node().append(this.rootElement.get$Node());
             }
-            return this;
+            this._afterRender();
+        };
+        Component.prototype._beforeRender = function () {
+            this.beforeRender();
+            _.invoke(this.children, "beforeRender");
+        };
+        Component.prototype.beforeRender = function () {
+        };
+        Component.prototype._afterRender = function () {
+            this.afterRender();
+            _.invoke(this.children, "_afterRender");
         };
         Component.prototype.afterRender = function () {
         };
-        Component.prototype.renderer = function () {
-            this.updateStyle();
-            return this.el;
+        // renderer(){
+        //     this.updateStyle()
+        //     return this.el
+        // }
+        Component.prototype.setBusy = function () {
+            var a = new Animation_1.BallLoader();
+            a.setConfig({ $root: this.rootElement.get$Node() });
+            a.show();
+            // this.$el.append(Util.BounceBusyDiv(200,200,3))
+            this.rootElement.addClass("busy");
         };
         return Component;
     }(Evented_1.Evented));
+    exports.Component = Component;
 });

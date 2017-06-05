@@ -2,12 +2,10 @@ import {Evented} from "../Evented"
 import _ =require("underscore")
 import $= require("jquery")
 import d3=require("d3")
-import {IView} from "../IView"
 import template = require ('text!./DropBox.html')
-export class DropBox extends Evented implements IView{
+export class DropBox extends Evented{
         constructor(){
             super()
-
         }
         el:any
         private ds=[{name:"Null"}]
