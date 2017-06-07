@@ -3,7 +3,7 @@ import L=require("leaflet")
 import d3= require("d3")
 import {SmartLayer} from"./SmartLayer"
 import {Line,Polygon}from "./LeafletShapes"
-import {DropBox} from "../Element/DropBox"
+import {LineAdjuster} from "../Element/LineAdjuster"
 export class InteractiveLayer extends SmartLayer{
     constructor(conf?){
         super(conf)
@@ -16,10 +16,10 @@ export class InteractiveLayer extends SmartLayer{
         let f=d3.select(document.createDocumentFragment())
         // let ul=f.append("xhtml:ul").classed("dropdown-menu",true)
         // ul.append("xhtml:li").text("haha")
-        let dropbox=new DropBox()
-        dropbox.setData([{value:"+10%"},{value:"+5%"},{value:"-5%"},{value:"+10%"}])
+        let dropbox=new LineAdjuster()
+        // dropbox.setData([{value:"+10%"},{value:"+5%"},{value:"-5%"},{value:"+10%"}])
         
-        l.bindPopup(dropbox.toElement())
+        l.bindPopup(dropbox.toHtml().get(0))
         this.layer.addLayer(l)
         return this
     }

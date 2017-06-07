@@ -1,33 +1,20 @@
-import {Component} from "../Component"
+import {Component} from "../Core/Component"
+import {View} from "../Core/View"
+import {Controller} from "../Core/Controller"
 import _ =require("lodash")
 import L=require("leaflet")
 import $=require("jquery")
 import {SmartLayer} from"./SmartLayer"
 import {IMapSetting} from "../Map/IMapSetting"
-import {Util}from "../Util"
-import {MapElement} from "./MapElement"
-export class SmartMap extends Component{
-    constructor(id?,c?){
-        super(id == undefined ? _.uniqueId("Map") : id, c)
-        //this.setStyle({position:"absolute"})
+export class SmartMapController extends Controller{
+    constructor(conf?){
+        super(conf)
         this.layers=[]
-        // let mapContainer= $("<div></div>").css({
-        //     width:"100%",
-        //     height:"100%"
-        // }).get(0)
-        this.rootElement=new MapElement()
-        this.rootElement.attr({id:this.id}).style(this.config.style).addClass(this.config.class)
-        // let $div=$("<div></div>").css({
-        //     right:"0px",top:"0px",bottom:"0px",left:"0px",
-        //     position:"absolute"
-        // })
-        // this.$el.append($div)
-       
-        
-       
     }
     setMapSetting(s){
-          this.mapSetting=s
+        this.mapSetting=s
+        this.leaflet.setView(this.mapSetting.center, this.mapSetting.zoom);
+          //_.each(this.layers,(l)=>l.addTo(this.leaflet))
          let base= new SmartLayer({id:"base"})
          base.layer=L.tileLayer(this.mapSetting.baseLayer.mapUrl, {
                         maxZoom: this.mapSetting.baseLayer.maxZoom
@@ -35,20 +22,17 @@ export class SmartMap extends Component{
          
          this.addLayer(base)
     }
-    rootElement:MapElement
     mapSetting:IMapSetting
     leaflet:L.Map
-
-    afterRender(){
-          this.leaflet=L.map(this.rootElement.getMapNode$().get(0),{scrollWheelZoom:true})
-          this.leaflet.setView(this.mapSetting.center, this.mapSetting.zoom);
-          _.each(this.layers,(l)=>l.addTo(this.leaflet))
+    onAfterRender(){
+          this.leaflet=L.map(this.view.getNode(),{scrollWheelZoom:true})
     }
     layers:SmartLayer []
     addLayer(l:SmartLayer){
         this.removeLayer(l.id)
-        this.listenTo(l)
+       // this.listenTo(l)
         this.layers.push(l)
+        l.addTo(this.leaflet)
     }
     getLayer(id:string){
         let ls=_.find(this.layers,{id:id})
@@ -64,9 +48,18 @@ export class SmartMap extends Component{
             this.layers=_.filter(this.layers,o=>o.id!=id)
         return this
     }
-    // setBusy(){
-    //     this.$el.append(Util.genBusyDiv(200,200,3))
-    //     //this.$el.append(Util.BounceBusyDiv(200,200,4,undefined,"Loading"))
-    //     this.$el.addClass("busy")
-    // }
+}
+export class SmartMap extends Component{
+    constructor(id?,conf?){
+        super(id==undefined? _.uniqueId("map"):id,conf)
+        this.map=new SmartMapController()
+        this.map.renderAt(this.view.getNode$())
+    }
+    setMapSetting(s){
+        this.map.setMapSetting(s)
+    }
+    map: SmartMapController
+    remove(){
+        this.view.remove()
+    }
 }

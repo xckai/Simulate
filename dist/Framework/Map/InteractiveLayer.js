@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "leaflet", "d3", "./SmartLayer", "./LeafletShapes", "../Element/DropBox"], function (require, exports, L, d3, SmartLayer_1, LeafletShapes_1, DropBox_1) {
+define(["require", "exports", "leaflet", "d3", "./SmartLayer", "./LeafletShapes", "../Element/LineAdjuster"], function (require, exports, L, d3, SmartLayer_1, LeafletShapes_1, LineAdjuster_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var InteractiveLayer = (function (_super) {
@@ -23,9 +23,9 @@ define(["require", "exports", "leaflet", "d3", "./SmartLayer", "./LeafletShapes"
             var f = d3.select(document.createDocumentFragment());
             // let ul=f.append("xhtml:ul").classed("dropdown-menu",true)
             // ul.append("xhtml:li").text("haha")
-            var dropbox = new DropBox_1.DropBox();
-            dropbox.setData([{ value: "+10%" }, { value: "+5%" }, { value: "-5%" }, { value: "+10%" }]);
-            l.bindPopup(dropbox.toElement());
+            var dropbox = new LineAdjuster_1.LineAdjuster();
+            // dropbox.setData([{value:"+10%"},{value:"+5%"},{value:"-5%"},{value:"+10%"}])
+            l.bindPopup(dropbox.toHtml().get(0));
             this.layer.addLayer(l);
             return this;
         };

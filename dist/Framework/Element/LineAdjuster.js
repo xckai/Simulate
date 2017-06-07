@@ -8,14 +8,20 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../BaseElement"], function (require, exports, BaseElement_1) {
+define(["require", "exports", "../BaseElement", "text!./LineAdjuster.html"], function (require, exports, BaseElement_1, template) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var LineAdjuster = (function (_super) {
         __extends(LineAdjuster, _super);
         function LineAdjuster() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super.call(this, "section") || this;
+            _this.addClass("lineAdjuster");
+            return _this;
         }
+        LineAdjuster.prototype.toHtml = function () {
+            this.$el.html(template);
+            return this.$el;
+        };
         return LineAdjuster;
     }(BaseElement_1.BaseElement));
     exports.LineAdjuster = LineAdjuster;

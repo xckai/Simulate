@@ -1,5 +1,20 @@
-.leaflet-popup-content {
-  width: inherit !important;
+.lineAdjuster {
+  background: #bf8686;
+  padding: 1rem;
+  box-sizing: content-box;
+}
+.lineAdjuster .valueInput {
+  display: initial;
+  width: 6rem;
+}
+.lineAdjuster footer {
+  margin: 0.5rem auto;
+  display: flex;
+  justify-content: space-around;
+}
+.lineAdjuster footer button {
+  width: 5rem;
+  margin-left: 1rem;
 }
 .busy-backdrop {
   background: rgba(0, 0, 0, 0.5);
