@@ -1,15 +1,17 @@
 import {App}from "../Framework/Core/App"
 import {SmartMap} from"../Framework/Map/SmartMap"
- import setting =require("../Vicroad/setting")
+import setting =require("../Vicroad/setting")
+import {Bar}from "./Bar/NavBar"
 declare var window :any
  class VicroadApp extends App{
     constructor(){
         super("vicroad")
-      
+        this.bar.addTo(this)
         this.router.addRule("road",this.showRoad.bind(this))
         this.router.addRule("area",this.showArea.bind(this))
-        this.router.enable()
+        this.router.enable("road")
     }
+    bar=new Bar()
     roadMap:SmartMap
     areaMap:SmartMap
     showRoad(){

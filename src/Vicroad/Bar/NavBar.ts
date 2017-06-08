@@ -5,49 +5,44 @@ import d3 = require("d3")
 import $ = require("jquery")
 import _ =require("lodash")
 import template = require('text!./Bar.html')
-class dropDown extends Controller{
+class BarView extends View{
+    renderer(){
+        let ns=this.namespace,tag=this.tag, _ns,_tag
+            if(ns=="svg"){
+                        _ns="http://www.w3.org/2000/svg"
+                }else{
+                        _ns="http://www.w3.org/1999/xhtml"
+                }
+                _tag=tag==undefined?"div":tag
+                let el=document.createElementNS(_ns,_tag)
+        $(el).append("<p class='band' >SmartTraffic</p>")
 
+        
+        return $(el)  
+    }
 }
 
 export class Bar extends Component {
     constructor(id ? , c ? ) {
         super(id == undefined ? _.uniqueId("Bar") : id, c)
-        
-        // let watch=(newData)=>{
-        //     console.log("change" ,newData)
-        //     this.fire("optionChange", {
-        //         id: newData
-        //     })
-        // }
+        this.view=new BarView()
+        this.view.render()
+        this.view.attr({id:this.id}).style(this.config.style).addClass(this.config.class)
     }
-    // renderer() {
-    //     //let c=document.createDocumentFragment()
-    //     this.$el.append(template)
-    //     this.initHook()
-    //     return this.el
-    // }
+
     config = {
-        class: [],
+        class: ["navbar"],
         style: {
             position: "absolute",
             left: "0px",
             right: "0px",
             top: "0px",
-            bottom: "0px",
+            bottom: "NaN",
+            width:"100%",
+            height:"3rem",
             display: "inhert"
+            
 
         }
     }
-
-    // initHook() {
-    //     $(this.el).find(".options").children("li").on("click", (e) => {
-    //         this.optionClicked(e)
-    //     })
-    // }
-    // optionClicked(e) {
-    //     let id = $(e.target).attr("value")
-
-    //     $(this.el).find(".options-text").text($(e.target).text())
-    //     $(this.el).find("#" + id + "-modal").modal("show")
-    // }
 }

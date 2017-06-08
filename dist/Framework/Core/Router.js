@@ -5,9 +5,14 @@ define(["require", "exports", "jquery"], function (require, exports, $) {
         function HashRouter() {
             this.data = {};
         }
-        HashRouter.prototype.enable = function () {
+        HashRouter.prototype.enable = function (str) {
             $(window).bind("hashchange", this.hashChange.bind(this));
-            this.hashChange();
+            if (str) {
+                window.location.hash = "#" + str;
+            }
+            else {
+                this.hashChange();
+            }
         };
         HashRouter.prototype.hashChange = function () {
             var hash = window.location.hash;

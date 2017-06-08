@@ -17,8 +17,9 @@ export class Component extends Controller{
         }
         this.setConfig(conf)
         this.view=new View("section")
+         this.view.render()
         this.view.attr({id:this.id}).style(this.config.style).addClass(this.config.class)
-        this.view.render()
+       
     }
     view:View
     protected setConfig(c){

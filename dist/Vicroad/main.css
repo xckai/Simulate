@@ -1,3 +1,10 @@
+.navbar {
+  background: -webkit-linear-gradient(45deg, #020e31, #07216b, #020e31);
+  background: linear-gradient(45deg, #020e31, #07216b, #020e31);
+}
+.navbar .band {
+  color: wheat;
+}
 .lineAdjuster {
   background: #bf8686;
   padding: 1rem;

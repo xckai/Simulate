@@ -38,8 +38,8 @@ define(["require", "exports", "lodash", "./View", "./Controller"], function (req
             }
             _this.setConfig(conf);
             _this.view = new View_1.View("section");
-            _this.view.attr({ id: _this.id }).style(_this.config.style).addClass(_this.config.class);
             _this.view.render();
+            _this.view.attr({ id: _this.id }).style(_this.config.style).addClass(_this.config.class);
             return _this;
         }
         Component.prototype.setConfig = function (c) {

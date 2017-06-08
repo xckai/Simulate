@@ -23,10 +23,14 @@ define(["require", "exports", "lodash", "jquery"], function (require, exports, _
         };
         View.prototype.addClass = function (cls) {
             var _this = this;
-            _.each(cls, function () {
-                _this.$el.addClass(cls);
+            _.each(cls, function (c) {
+                _this.$el.addClass(c);
             });
             return this;
+        };
+        View.prototype.setClass = function (cls) {
+            this.$el.removeClass();
+            this.$el.attr("class", cls);
         };
         View.prototype.removeClass = function (cls) {
             var _this = this;

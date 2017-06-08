@@ -1,3 +1,4 @@
+import { calendarFormat } from '../../../lib/moment/moment';
 import _ =require("lodash")
 import $= require("jquery")
 import {Util} from "./Util"
@@ -28,10 +29,14 @@ export class View {
         return this
     }
     addClass(cls){
-      _.each(cls,()=>{
-            this.$el.addClass(cls)
+      _.each(cls,(c)=>{
+            this.$el.addClass(c)
       })
       return this
+    }
+    setClass(cls){
+        this.$el.removeClass()
+        this.$el.attr("class",cls)
     }
     removeClass(cls){
       _.each(cls,()=>{

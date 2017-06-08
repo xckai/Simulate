@@ -8,15 +8,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "../Framework/Core/App", "../Framework/Map/SmartMap", "../Vicroad/setting"], function (require, exports, App_1, SmartMap_1, setting) {
+define(["require", "exports", "../Framework/Core/App", "../Framework/Map/SmartMap", "../Vicroad/setting", "./Bar/NavBar"], function (require, exports, App_1, SmartMap_1, setting, NavBar_1) {
     "use strict";
     var VicroadApp = (function (_super) {
         __extends(VicroadApp, _super);
         function VicroadApp() {
             var _this = _super.call(this, "vicroad") || this;
+            _this.bar = new NavBar_1.Bar();
+            _this.bar.addTo(_this);
             _this.router.addRule("road", _this.showRoad.bind(_this));
             _this.router.addRule("area", _this.showArea.bind(_this));
-            _this.router.enable();
+            _this.router.enable("road");
             return _this;
         }
         VicroadApp.prototype.showRoad = function () {

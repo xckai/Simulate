@@ -31,6 +31,7 @@ export class Controller{
        this.invokeAterRender()
        return this
     }
+    
     onAfterRender(){}
     onBeforeRender(){}
     invokeAterRender(){
@@ -52,6 +53,7 @@ export class Controller{
     }
     protected updateStyle(){
            this.view.style(this.config.style)
+           this.view.setClass(this.config.class.join(" "))
            return this
     }
 

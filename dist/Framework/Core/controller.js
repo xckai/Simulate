@@ -50,6 +50,7 @@ define(["require", "exports", "lodash", "./View"], function (require, exports, _
         };
         Controller.prototype.updateStyle = function () {
             this.view.style(this.config.style);
+            this.view.setClass(this.config.class.join(" "));
             return this;
         };
         return Controller;
